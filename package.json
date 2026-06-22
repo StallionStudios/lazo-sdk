@@ -1,0 +1,26 @@
+{
+	"name": "lazo-sdk",
+	"version": "0.1.0",
+	"description": "TypeScript SDK for the Lazo CRM API",
+	"author": "Juan Daniel <juan.sanchez@stallionstudios.net>",
+	"repository": {
+		"type": "git",
+		"url": "https://github.com/StallionStudios/lazo-sdk"
+	},
+	"bugs": {
+		"url": "https://github.com/StallionStudios/lazo-sdk/issues"
+	},
+	"type": "module",
+	"main": "dist/index.js",
+	"types": "dist/index.d.ts",
+	"files": ["dist"],
+	"scripts": {
+		"build": "tsc",
+		"test": "node --import tsx --test test/*.test.ts"
+	},
+	"license": "MIT",
+	"devDependencies": {
+		"tsx": "^4.0.0",
+		"typescript": "^5.4.0"
+	}
+}
