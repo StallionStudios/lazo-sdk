@@ -38,3 +38,34 @@ test("createRecord throws LazoError on non-2xx", async () => {
 		return true;
 	});
 });
+
+test("listRecords GETs /api/resources/{resource} with pagination + field filters", async () => {
+	const calls = stubFetch(200, { data: [{ id: "1" }], total: 1, page: 1, limit: 25 });
+	const client = new LazoClient({ apiToken: "lazo_abc", baseUrl: "https://app.lazo.com" });
+
+	const res = await client.listRecords("contacts", { page: 2, email: "ada@x.com" });
+
+	assert.deepEqual(res.data, [{ id: "1" }]);
+	assert.equal(calls[0].url, "https://app.lazo.com/api/resources/contacts?page=2&email=ada%40x.com");
+	assert.equal(calls[0].init.method, undefined); // GET is the fetch default
+	assert.equal((calls[0].init.headers as Record<string, string>).Authorization, "Bearer lazo_abc");
+});
+
+test("listRecords omits the query string when no params given", async () => {
+	const calls = stubFetch(200, { data: [], total: 0, page: 1, limit: 25 });
+	const client = new LazoClient({ apiToken: "lazo_abc", baseUrl: "https://app.lazo.com" });
+
+	await client.listRecords("deals");
+
+	assert.equal(calls[0].url, "https://app.lazo.com/api/resources/deals");
+});
+
+test("getRecord GETs /api/{resource}/{id} and returns the record", async () => {
+	const calls = stubFetch(200, { id: "42", name: "Ada" });
+	const client = new LazoClient({ apiToken: "lazo_abc", baseUrl: "https://app.lazo.com" });
+
+	const rec = await client.getRecord("contacts", "42");
+
+	assert.deepEqual(rec, { id: "42", name: "Ada" });
+	assert.equal(calls[0].url, "https://app.lazo.com/api/contacts/42");
+});

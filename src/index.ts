@@ -1,4 +1,4 @@
-/** Lazo CRM SDK — phase 1: create records via the Lazo API. */
+/** Lazo CRM SDK — create and list records via the Lazo API. */
 
 export interface LazoClientOptions {
 	/** API token from Lazo (starts with `lazo_`). */
@@ -14,6 +14,28 @@ export class LazoError extends Error {
 	}
 }
 
+/**
+ * Search records by custom field (exact-match).
+ */
+export type SearchRecordsOptions = Record<string, string | number | boolean>
+
+/** Options for listing records. */
+export interface ListRecordsOptions {
+	page?: number;
+	limit?: number;
+	sort?: "createdAt" | "updatedAt";
+	order?: "asc" | "desc";
+	deleted?: boolean;
+}
+
+/** Paginated list response from GET /api/{resource}. */
+export interface ListRecordsResponse<T = Record<string, unknown>> {
+	data: T[];
+	total: number;
+	page: number;
+	limit: number;
+}
+
 export class LazoClient {
 	private readonly apiToken: string;
 	private readonly baseUrl: string;
@@ -27,19 +49,55 @@ export class LazoClient {
 
 	/**
 	 * Create a record for the given resource (e.g. "contacts", "deals").
-	 * Maps to POST /api/{resource} on the Lazo API.
 	 */
 	async createRecord<T = Record<string, unknown>>(
 		resource: string,
 		data: Record<string, unknown>
 	): Promise<T> {
-		const res = await fetch(`${this.baseUrl}/api/${resource}`, {
+		return this.request<T>(`/api/${resource}`, {
 			method: "POST",
+			body: JSON.stringify(data),
+		});
+	}
+
+	/**
+	 * List records for the given resource, paginated with `options` and filtered by `search`.
+	 */
+	async listRecords<T = Record<string, unknown>>(
+		resource: string,
+		search: SearchRecordsOptions = {},
+		options: ListRecordsOptions = {}
+	): Promise<ListRecordsResponse<T>> {
+		const params = new URLSearchParams();
+		for (const [k, v] of Object.entries(options)) {
+			if (v !== undefined) params.set(k, String(v));
+		}
+		for (const [k, v] of Object.entries(search)) {
+			if (v !== undefined) params.set(k, String(v));
+		}
+		const query = params.toString();
+		const suffix = query ? `?${query}` : "";
+		return this.request<ListRecordsResponse<T>>(`/api/${resource}${suffix}`);
+	}
+
+	/**
+	 * Fetch a single record by id.
+	 */
+	async getRecord<T = Record<string, unknown>>(
+		resource: string,
+		id: string
+	): Promise<T> {
+		return this.request<T>(`/api/${resource}/${encodeURIComponent(id)}`);
+	}
+
+	private async request<T>(path: string, init: RequestInit = {}): Promise<T> {
+		const res = await fetch(`${this.baseUrl}${path}`, {
+			...init,
 			headers: {
 				Authorization: `Bearer ${this.apiToken}`,
 				"Content-Type": "application/json",
+				...init.headers,
 			},
-			body: JSON.stringify(data),
 		});
 
 		if (!res.ok) {
