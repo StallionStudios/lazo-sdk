@@ -1,6 +1,6 @@
 {
 	"name": "lazo-sdk",
-	"version": "0.1.5",
+	"version": "0.1.6",
 	"description": "TypeScript SDK for the Lazo CRM API",
 	"author": "Juan Daniel <juan.sanchez@stallionstudios.net>",
 	"repository": {
