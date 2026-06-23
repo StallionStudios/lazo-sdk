@@ -77,7 +77,7 @@ export class LazoClient {
 		}
 		const query = params.toString();
 		const suffix = query ? `?${query}` : "";
-		return this.request<ListRecordsResponse<T>>(`/api/${resource}${suffix}`);
+		return this.request<ListRecordsResponse<T>>(`/api/resources/${resource}${suffix}`);
 	}
 
 	/**
