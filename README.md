@@ -1,6 +1,6 @@
 # lazo-sdk
 
-TypeScript SDK for the [Lazo](../lazo-3) CRM API.
+TypeScript SDK for the [Lazo Digital](https://lazo.digital) API.
 
 ```ts
 import { LazoClient } from "lazo-sdk";

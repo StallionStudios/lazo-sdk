@@ -2,15 +2,11 @@ name: Publish to npm
 
 on:
   push:
-    branches: [master]
+    tags: ["v*"]
 
 jobs:
   publish:
-    # ponytail: our own bump commit pushes back to master; skip it to avoid an infinite loop
-    if: ${{ !contains(github.event.head_commit.message, '[ci bump]') }}
     runs-on: ubuntu-latest
-    permissions:
-      contents: write
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
@@ -20,12 +16,6 @@ jobs:
       - run: npm install
       - run: npm test
       - run: npm run build
-      - name: Bump version, commit, tag
-        run: |
-          git config user.name "github-actions[bot]"
-          git config user.email "github-actions[bot]@users.noreply.github.com"
-          npm version patch -m "chore: release v%s [ci bump]"
-          git push --follow-tags
       - run: npm publish --access public
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
