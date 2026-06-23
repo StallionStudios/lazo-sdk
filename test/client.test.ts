@@ -23,7 +23,7 @@ test("createRecord posts to /api/{resource} with bearer token", async () => {
 	const rec = await client.createRecord("contacts", { name: "Ada" });
 
 	assert.deepEqual(rec, { id: "1", name: "Ada" });
-	assert.equal(calls[0].url, "https://app.lazo.com/api/contacts"); // trailing slash trimmed
+	assert.equal(calls[0].url, "https://app.lazo.com/api/resources/contacts"); // trailing slash trimmed
 	assert.equal((calls[0].init.headers as Record<string, string>).Authorization, "Bearer lazo_abc");
 	assert.equal(calls[0].init.body, JSON.stringify({ name: "Ada" }));
 });
@@ -67,5 +67,5 @@ test("getRecord GETs /api/{resource}/{id} and returns the record", async () => {
 	const rec = await client.getRecord("contacts", "42");
 
 	assert.deepEqual(rec, { id: "42", name: "Ada" });
-	assert.equal(calls[0].url, "https://app.lazo.com/api/contacts/42");
+	assert.equal(calls[0].url, "https://app.lazo.com/api/resources/contacts/42");
 });

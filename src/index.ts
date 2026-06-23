@@ -54,7 +54,7 @@ export class LazoClient {
 		resource: string,
 		data: Record<string, unknown>
 	): Promise<T> {
-		return this.request<T>(`/api/${resource}`, {
+		return this.request<T>(`/api/resources/${resource}`, {
 			method: "POST",
 			body: JSON.stringify(data),
 		});
@@ -87,7 +87,7 @@ export class LazoClient {
 		resource: string,
 		id: string
 	): Promise<T> {
-		return this.request<T>(`/api/${resource}/${encodeURIComponent(id)}`);
+		return this.request<T>(`/api/resources/${resource}/${encodeURIComponent(id)}`);
 	}
 
 	private async request<T>(path: string, init: RequestInit = {}): Promise<T> {
