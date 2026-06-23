@@ -5,7 +5,7 @@
 	"author": "Juan Daniel <juan.sanchez@stallionstudios.net>",
 	"repository": {
 		"type": "git",
-		"url": "https://github.com/StallionStudios/lazo-sdk"
+		"url": "git+https://github.com/StallionStudios/lazo-sdk.git"
 	},
 	"bugs": {
 		"url": "https://github.com/StallionStudios/lazo-sdk/issues"
@@ -18,8 +18,7 @@
 	],
 	"scripts": {
 		"build": "tsc",
-		"test": "node --import tsx --test test/*.test.ts",
-		"publish": "npm run build && npm version patch -m \"chore: release v%s [ci bump]\" && git push --follow-tags"
+		"test": "node --import tsx --test test/*.test.ts"
 	},
 	"license": "MIT",
 	"devDependencies": {
