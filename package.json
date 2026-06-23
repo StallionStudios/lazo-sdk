@@ -18,7 +18,8 @@
 	],
 	"scripts": {
 		"build": "tsc",
-		"test": "node --import tsx --test test/*.test.ts"
+		"test": "node --import tsx --test test/*.test.ts",
+		"bump": "npm run build && npm version patch -m \"chore: release v%s [ci bump]\" && git push --follow-tags"
 	},
 	"license": "MIT",
 	"devDependencies": {
